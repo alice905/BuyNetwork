@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+  <meta http-equiv="pragma" content="no-cache"> 
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate"> 
+  <meta http-equiv="expires" content="0">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+  <div id="app">
+      <header class="header">
+          <!-- 首页和列表页的header -->
+        
+              <h1 class="name go-back" v-on:click="goBack">
+                  美食网
+              </h1>
+            <div class="search" v-show="view != 'product'"> 
+                <!-- 如果是product就不要显示 -->
+                <input type="text" placeholder="搜索" v-model="seachKey" v-on:keyup.enter="goSeach">
+            </div>
+         
+           <!-- 商品详情页的header -->
+        <!--   <template v-show="view == 'product'">
+             <a href="#list/type" class="back" v-on:click="goBack">
+             </a>
+             <h2 class="dela">
+                商品详情
+            </h2>
+          </template> -->
+          <a class="login"></a>
+      </header>
+      <!-- banner图 -->
+     <div id='slider' class='swipe' v-show="view == 'home'">
+
+          <div class='swipe-wrap'>
+              <div>
+                <img src="img/image/banner1.jpg">
+                <div class="shaow">
+                    <img src="img/image/people.jpg">
+                    <p>这道红烧排骨连吃一周也不腻</p>
+                    <p>潘潘猫</p>
+                </div>
+              </div>
+              <div>
+                <img src="img/image/banner2.jpg">
+                <div class="shaow">
+                    <img src="img/image/people2.jpg">
+                    <p>小白都能成功的拔丝红薯</p>
+                    <p>笛子</p>
+                </div>
+              </div>
+              <div>
+                <img src="img/image/banner1.jpg">
+                <div class="shaow">
+                    <img src="img/image/people.jpg">
+                    <p>这道红烧排骨连吃一周也不腻</p>
+                    <p>潘潘猫</p>
+                </div>
+              </div>
+              <div>
+                <img src="img/image/banner2.jpg">
+                <div class="shaow">
+                    <img src="img/image/people2.jpg">
+                    <p>小白都能成功的拔丝红薯</p>
+                    <p>笛子</p>
+                </div>
+              </div>
+              <div>
+                <img src="img/image/banner1.jpg">
+                <div class="shaow">
+                    <img src="img/image/people.jpg">
+                    <p>这道红烧排骨连吃一周也不腻</p>
+                    <p>大花</p>
+                </div>
+              </div>
+          </div>
+          <div class="circles">
+            <ol>
+              <li class="cur"></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ol>
+          </div>
+     </div>
+    <!-- v-bind:is="view" 动态绑定属性-->
+     <component v-bind:is="view" v-bind:key="myKey"></component>
+  </div>
+
+   <!-- 首页模板 -->
+   <script type="text/template" id="template">
+          <section id="home" class="home">
+               <ul class="type-list">
+                   <li v-for="item in type">
+                       <a href="#list/type/{{item.id}}">
+                           <img v-bind:src="'img/icon/' + item.url"/>
+                           <span>{{item.title}}</span>
+                       </a>
+                   </li>
+               </ul>
+               <ul class="ad-list clearfix">
+                   <li v-for="item in ad">
+                     <a href="#product/{{item.id}}">
+                         <h3>{{item.title}}</h3>
+                         <p>{{item.description}}</p>
+                         <img v-bind:src="'img/product/' + item.url"/>
+                     </a>
+                   </li>
+               </ul>
+               <div class="SaleToday">
+                   <h5 class="SaleTitle">
+                      今日特卖
+                      <a>更多 &gt;</a>
+                   </h5>
+                   <ul>
+                        <li class="goods" v-for="item in special">
+                           <a href="#product/{{item.id}}">
+                               <img v-bind:src="'img/list/' + item.img">
+                               <p class='goods_title'>{{item.title}}</p>
+                               <p>
+                                   <span class="current-price">{{item.price | price}}</span>
+                                   <span class="orign-price">{{item.orignPrice | orignPrice}}</span>
+                                   <span class="sales">{{item.sales | sales}}</span>
+                               </p>
+                            </a>
+                        </li>
+                   </ul>
+               </div>
+              <div class="HotSale">
+                  <h5 class="SaleTitle">
+                      今日推荐
+                      <a>更多 &gt;</a>
+                  </h5>
+                  <div class="groom">
+                     <ul>
+                          <li v-for="item in list">
+                            <a href="#product/{{item.id}}">
+                              <img  v-bind:src="'img/list/' + item.img">
+                               <p class='goods_title'>{{item.title}}</p>
+                               <p>
+                                 <span class="current-price">{{item.price | price}}</span>
+                                 <span class="orign-price">{{item.orignPrice | orignPrice}}</span>
+                               </p>
+                               <p>
+                                 <span class="sales">{{item.sales | sales}}</span>
+                               </p>
+                            </a>
+                          </li>
+                     </ul>
+                  </div>
+               </div>
+           </section>
+   </script>
+   <!-- 列表模板 -->
+   <script type="text/template" id="list_template">
+        <section class="list" id="list">
+            <ul class="list-type clearfix">
+                <li v-for="item in type" v-on:click="changeType(item.key)">
+                   <span>{{item.value}}</span>
+                </li>
+            </ul>
+            <ul class="item-list">
+                <li class="clearfix" v-for="item in list | filterBy key">
+                    <a href="#product/{{item.id}}">
+                       <img v-bind:src="'img/list/' + item.img"/>
+                       <div class="description">
+                            <h2>{{item.title}}</h2>
+                            <p>
+                               <span class="current-price">{{item.price | price}}</span>
+                               <span class="orign-price">{{item.orignPrice | orignPrice}}</span>
+                               <span class="sales">{{item.sales | sales}}</span>
+                            </p>
+                       </div>
+                    </a>
+                </li>
+            </ul>
+            <div class="load-more" v-show="other.length" v-on:click="loadMore">
+                 <span>查看其它{{other.length}}条团购</span>
+                 <span class="arrow"></span>
+            </div>
+        </section>
+   </script>
+   <!-- product模板 -->
+  <script type="text/template" id="product_template">
+      <section id="product" class="product">
+           <div class="product-image">
+               <img v-bind:src="'img/ioc/' + data.src"/>
+               <h1>{{data.title}}</h1>
+               <p>{{data.description}}</p>
+           </div>
+           <div class="product-price">
+              <span class="price">
+                  <b>{{data.price}}</b>元
+              </sapn>
+              <span class="orign-price">{{data.orignPrice | orignPrice}}</span>
+              <span class="btn">立即购买</span>
+           </div>
+           <ul class="product-sales clearfix">
+              <li>支持自动退货</li>
+              <li>支持随时退货</li>
+              <li class="black">{{data.sales | sales}}</li>
+          </ul>
+          <div class="product-store module-item">
+            <h3 class="sub-title">店家信息</h3>
+            <div class="content">
+                <p>{{data.storeName}}</p>
+                <p>{{data.storeAdress}}</p>
+            </div>
+            <div class="item-footer">
+                 <p>查看{{data.storeNum}}家分店</p>
+            </div>
+          </div>
+          <div class="product-note module-item">
+             <h3 class="sub-title">购买须知</h3>
+             <div class="content">
+                <ul>
+                    <li>
+                        <h4>有效期</h4>
+                        <p>{{data.validateTime}}</p>
+                    </li>
+                    <li>
+                        <h4>使用时间</h4>
+                        <p>{{data.useTime}}</p>
+                    </li>
+                    <li>
+                        <h4>使用规则</h4>
+                      <ul>
+                         <li v-for="item in data.rules">{{item}}</li>
+                      </ul>
+                  </li>
+                </ul>
+             </div>
+          </div>
+      </section>
+  </script>
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript" src="js/require-min.js" data-main="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/swipe.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+         // 点击li事件
+         $(".list-type li").click(function(event) {
+             console.log(event);
+             $(this).addClass('current').siblings().removeClass('current');
+         });
+         // 指滑轮播图
+        var circlelis = document.querySelectorAll(".circles li");
+
+        var slider = document.getElementById('slider');
+        window.mySwipe = Swipe(slider,{
+          startSlide: 0,
+          speed: 500,
+          auto: 1000,
+          continuous: true,
+          disableScroll: false,
+          stopPropagation: false,
+          callback: function(index, elem) {
+              for(var i = 0 ; i < circlelis.length ; i++){
+                circlelis[i].className = "";
+              }
+              circlelis[index].className = "cur";
+          },
+          transitionEnd: function(index, elem) {}
+        });
+    });
+  
+  </script>
+</body>
+</html>
